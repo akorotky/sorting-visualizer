@@ -1,3 +1,4 @@
+import { ACTIONS } from "../animationReducer";
 import { sleep } from "../utils";
 
 // In-place Quicksort implementing Hoare partition
@@ -30,7 +31,7 @@ async function quickSortHelper(
     dispatchAnimation,
     speed
   );
-  dispatchAnimation({ type: "SET_PIVOT_INDEX", payload: null });
+  dispatchAnimation({ type: ACTIONS.SET_PIVOT_INDEX, payload: null });
   await quickSortHelper(array, startIdx, pivotIdx, dispatchAnimation, speed);
   await quickSortHelper(array, pivotIdx + 1, endIdx, dispatchAnimation, speed);
   return [...array];
@@ -40,7 +41,7 @@ async function partition(array, startIdx, endIdx, dispatchAnimation, speed) {
   // formula to avoid integer overflow
   const mid = Math.floor(startIdx + (endIdx - startIdx) / 2);
 
-  dispatchAnimation({ type: "SET_PIVOT_INDEX", payload: mid });
+  dispatchAnimation({ type: ACTIONS.SET_PIVOT_INDEX, payload: mid });
   await sleep(speed);
 
   const pivot = array[mid];
@@ -64,18 +65,18 @@ async function partition(array, startIdx, endIdx, dispatchAnimation, speed) {
 async function swap(array, i, j, dispatchAnimation, speed) {
   const tmp = array[i];
   array[i] = array[j];
-  dispatchAnimation({ type: "SET_ACTIVE_INDEX", payload: i });
-  dispatchAnimation({ type: "SET_ARRAY", payload: [...array] });
+  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: i });
+  dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: [...array] });
 
   await sleep(speed);
 
   array[j] = tmp;
-  dispatchAnimation({ type: "SET_ACTIVE_INDEX", payload: j });
-  dispatchAnimation({ type: "SET_ARRAY", payload: [...array] });
+  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: j });
+  dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: [...array] });
 
   await sleep(speed);
 
-  dispatchAnimation({ type: "SET_ACTIVE_INDEX", payload: null });
+  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: null });
 
   await sleep(speed);
 }

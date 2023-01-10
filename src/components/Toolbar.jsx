@@ -1,4 +1,5 @@
 import React from "react";
+import { ACTIONS } from "../functions/animationReducer";
 import mergeSort from "../functions/sorting_algorithms/merge_sort";
 import quickSort from "../functions/sorting_algorithms/quick_sort";
 import { generateArray, shuffle } from "../functions/utils";
@@ -10,9 +11,10 @@ function Toolbar({ animationState, dispatchAnimation }) {
     const newArraySize = parseInt(e.target.value);
     console.log(newArraySize);
     dispatchAnimation({
-      type: "SET_ARRAY",
+      type: ACTIONS.SET_ARRAY,
       payload: generateArray(newArraySize),
     });
+    dispatchAnimation({ type: ACTIONS.SET_SORTED_STATE, payload: false });
   }
 
   function changeSortingSpeed(e) {
@@ -20,19 +22,19 @@ function Toolbar({ animationState, dispatchAnimation }) {
     console.log(newSpeed);
 
     dispatchAnimation({
-      type: "SET_SORTING_SPEED",
+      type: ACTIONS.SET_SORTING_SPEED,
       payload: newSpeed,
     });
   }
 
   function shuffleArray(array) {
-    dispatchAnimation({ type: "SET_ARRAY", payload: shuffle(array) });
-    dispatchAnimation({ type: "SET_SORTED_STATE", payload: false });
+    dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: shuffle(array) });
+    dispatchAnimation({ type: ACTIONS.SET_SORTED_STATE, payload: false });
   }
 
   async function sort(animationState, sortingFunction) {
     await sortingFunction(animationState, dispatchAnimation);
-    dispatchAnimation({ type: "SET_SORTED_STATE", payload: true });
+    dispatchAnimation({ type: ACTIONS.SET_SORTED_STATE, payload: true });
   }
 
   return (
@@ -59,7 +61,7 @@ function Toolbar({ animationState, dispatchAnimation }) {
           id="changeSpeed"
           type="range"
           min="1"
-          max="100"
+          max="500"
           onChange={changeSortingSpeed}
         />
       </div>

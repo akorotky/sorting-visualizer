@@ -1,3 +1,4 @@
+import { ACTIONS } from "../animationReducer";
 import { sleep } from "../utils";
 
 async function mergeSort(animation, dispatchAnimation) {
@@ -54,11 +55,11 @@ async function mergeLeftRight(
       array[k++] = leftRightHalves[j++];
     }
 
-    dispatchAnimation({ type: "SET_ACTIVE_INDEX", payload: k - 1 });
-    dispatchAnimation({ type: "SET_ARRAY", payload: [...array] });
+    dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: k - 1 });
+    dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: [...array] });
     await sleep(speed);
   }
-  dispatchAnimation({ type: "SET_ACTIVE_INDEX", payload: null });
+  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: null });
 }
 
 export default mergeSort;
