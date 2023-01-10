@@ -1,0 +1,17 @@
+.array-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end; /* make the bars face upwards*/
+  height: 100%;
+  padding: 3%;
+  background-color: black;
+}
+.array-bar {
+  background-color: rgb(58, 176, 255);
+  margin: 0 1px;
+}
+
+.array-sorted {
+  background-color: rgb(26, 190, 11);
+  margin: 0 1px;
+}
