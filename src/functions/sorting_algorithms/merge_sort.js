@@ -1,65 +1,97 @@
 import { ACTIONS } from "../animationReducer";
 import { sleep } from "../utils";
 
+const COLORS = {
+  MERGING_IDX: "greenyellow",
+  COPY_IDX: "red",
+};
 async function mergeSort(animation, dispatchAnimation) {
   const indexRange = [0, animation.array.length - 1];
   await mergeSortHelper(
-    animation.array,
+    [...animation.array],
+    [...animation.array],
     ...indexRange,
     dispatchAnimation,
-    animation.sortingSpeed
+    animation.animationDelay
   );
   return animation.array;
 }
 async function mergeSortHelper(
   array,
+  auxiliaryArray,
   startIdx,
   endIdx,
   dispatchAnimation,
-  speed
+  delay
 ) {
   if (endIdx === startIdx) {
     return;
   }
-  const mid = Math.floor((startIdx + endIdx) / 2);
-  await mergeSortHelper(array, startIdx, mid, dispatchAnimation, speed);
-  await mergeSortHelper(array, mid + 1, endIdx, dispatchAnimation, speed);
-  await mergeLeftRight(array, startIdx, mid, endIdx, dispatchAnimation, speed);
+  const midIdx = Math.floor((startIdx + endIdx) / 2);
+  await mergeSortHelper(
+    auxiliaryArray,
+    array,
+    startIdx,
+    midIdx,
+    dispatchAnimation,
+    delay
+  );
+  await mergeSortHelper(
+    auxiliaryArray,
+    array,
+    midIdx + 1,
+    endIdx,
+    dispatchAnimation,
+    delay
+  );
+  await mergeLeftRight(
+    array,
+    auxiliaryArray,
+    startIdx,
+    midIdx,
+    endIdx,
+    dispatchAnimation,
+    delay
+  );
 }
 
 async function mergeLeftRight(
   array,
+  auxiliaryArray,
   startIdx,
-  mid,
+  midIdx,
   endIdx,
   dispatchAnimation,
-  speed
+  delay
 ) {
-  const leftRightHalves = array.slice(startIdx, endIdx + 1);
-  const newMid = mid - startIdx;
-  let i = 0,
-    j = newMid + 1,
-    k = startIdx;
+  let i = startIdx,
+    j = midIdx + 1,
+    copyFromIdx = null;
 
-  // merge two arrays into one sorted array
-  while (k <= endIdx) {
-    if (i <= newMid && j < leftRightHalves.length) {
-      if (leftRightHalves[i] <= leftRightHalves[j]) {
-        array[k++] = leftRightHalves[i++];
-      } else {
-        array[k++] = leftRightHalves[j++];
-      }
-    } else if (i <= newMid) {
-      array[k++] = leftRightHalves[i++];
+  for (let k = startIdx; k <= endIdx; k++) {
+    if (i <= midIdx && (j > endIdx || auxiliaryArray[i] <= auxiliaryArray[j])) {
+      copyFromIdx = i;
+      array[k] = auxiliaryArray[i++];
     } else {
-      array[k++] = leftRightHalves[j++];
+      copyFromIdx = j;
+      array[k] = auxiliaryArray[j++];
     }
-
-    dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: k - 1 });
+    dispatchAnimation({
+      type: ACTIONS.SET_INDEX_COLOR,
+      payload: [
+        [k, COLORS.MERGING_IDX],
+        [copyFromIdx, COLORS.COPY_IDX],
+      ],
+    });
     dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: [...array] });
-    await sleep(speed);
+
+    await sleep(delay);
+
+    dispatchAnimation({
+      type: ACTIONS.CLEAR_INDEX_COLOR,
+      payload: [k, copyFromIdx],
+    });
   }
-  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: null });
 }
 
 export default mergeSort;

@@ -1,22 +1,23 @@
 import "./Body.css";
 
 function Body({ animationState }) {
-  const { array, isArraySorted, activeIndex, pivotIndex } = animationState;
+  const { array, isArraySorted, coloredIndices } = animationState;
 
   const COLOR = {
-    ACTIVE_INDEX: "orangered",
-    PIVOT_INDEX: "gold",
-    SORTED: "rgb(26, 190, 11)",
+    SORTED: ["forestgreen", "green", "darkgreen"],
+    DEFAULT: ["silver", "darkgray", "gray"],
   };
 
   const widthRatio = 100 / array.length;
   const heightRatio = widthRatio / 1.4;
 
   function getColor(idx) {
-    if (isArraySorted) return COLOR.SORTED;
-    if (idx === activeIndex) return COLOR.ACTIVE_INDEX;
-    if (idx === pivotIndex) return COLOR.PIVOT_INDEX;
-    return null;
+    if (isArraySorted) return COLOR.SORTED[idx % 3];
+    if (idx in coloredIndices) {
+      return coloredIndices[idx];
+    }
+
+    return COLOR.DEFAULT[idx % 3];
   }
 
   return (

@@ -1,6 +1,11 @@
 import { ACTIONS } from "../animationReducer";
 import { sleep } from "../utils";
 
+const COLORS = {
+  PIVOT: "gold",
+  SWAP: "deepskyblue",
+};
+
 // In-place Quicksort implementing Hoare partition
 // using the middle element as the pivot
 
@@ -10,7 +15,7 @@ async function quickSort(animation, dispatchAnimation) {
     animation.array,
     ...indexRange,
     dispatchAnimation,
-    animation.sortingSpeed
+    animation.animationDelay
   );
 }
 async function quickSortHelper(
@@ -18,7 +23,7 @@ async function quickSortHelper(
   startIdx,
   endIdx,
   dispatchAnimation,
-  speed
+  delay
 ) {
   if (startIdx >= endIdx) {
     return;
@@ -29,20 +34,21 @@ async function quickSortHelper(
     startIdx,
     endIdx,
     dispatchAnimation,
-    speed
+    delay
   );
-  dispatchAnimation({ type: ACTIONS.SET_PIVOT_INDEX, payload: null });
-  await quickSortHelper(array, startIdx, pivotIdx, dispatchAnimation, speed);
-  await quickSortHelper(array, pivotIdx + 1, endIdx, dispatchAnimation, speed);
+  await quickSortHelper(array, startIdx, pivotIdx, dispatchAnimation, delay);
+  await quickSortHelper(array, pivotIdx + 1, endIdx, dispatchAnimation, delay);
   return [...array];
 }
 
-async function partition(array, startIdx, endIdx, dispatchAnimation, speed) {
-  // formula to avoid integer overflow
+async function partition(array, startIdx, endIdx, dispatchAnimation, delay) {
+  // set pivot index
   const mid = Math.floor(startIdx + (endIdx - startIdx) / 2);
 
-  dispatchAnimation({ type: ACTIONS.SET_PIVOT_INDEX, payload: mid });
-  await sleep(speed);
+  dispatchAnimation({
+    type: ACTIONS.SET_INDEX_COLOR,
+    payload: [[mid, COLORS.PIVOT]],
+  });
 
   const pivot = array[mid];
   let i = startIdx - 1,
@@ -56,29 +62,43 @@ async function partition(array, startIdx, endIdx, dispatchAnimation, speed) {
       j--;
     } while (array[j] > pivot);
 
-    if (i >= j) return j;
+    if (i >= j) {
+      // clear pivot
+      dispatchAnimation({
+        type: ACTIONS.CLEAR_INDEX_COLOR,
+        payload: [mid],
+      });
+      return j;
+    }
 
-    await swap(array, i, j, dispatchAnimation, speed);
+    await swap(array, i, j, dispatchAnimation, delay);
   }
 }
 
-async function swap(array, i, j, dispatchAnimation, speed) {
+async function swap(array, i, j, dispatchAnimation, delay) {
   const tmp = array[i];
   array[i] = array[j];
-  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: i });
-  dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: [...array] });
-
-  await sleep(speed);
-
   array[j] = tmp;
-  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: j });
-  dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: [...array] });
 
-  await sleep(speed);
+  dispatchAnimation({
+    type: ACTIONS.SET_INDEX_COLOR,
+    payload: [
+      [i, COLORS.SWAP],
+      [j, COLORS.SWAP],
+    ],
+  });
 
-  dispatchAnimation({ type: ACTIONS.SET_ACTIVE_INDEX, payload: null });
+  dispatchAnimation({
+    type: ACTIONS.SET_ARRAY,
+    payload: [...array],
+  });
 
-  await sleep(speed);
+  await sleep(delay);
+
+  dispatchAnimation({
+    type: ACTIONS.CLEAR_INDEX_COLOR,
+    payload: [i, j],
+  });
 }
 
 export default quickSort;

@@ -5,17 +5,13 @@ import "./SortingVisualizer.css";
 import { initAnimation, animationReducer } from "../functions/animationReducer";
 
 function SortingVisualizer() {
-  const ANIMATION_SPEED = 0;
-  const ARRAY_SIZE = 50;
+  const ANIMATION_DELAY = 30;
+  const ARRAY_SIZE = 100;
 
   const [animation, dispatchAnimation] = useReducer(
     animationReducer,
-    initAnimation(ARRAY_SIZE)
+    initAnimation(ARRAY_SIZE, ANIMATION_DELAY)
   );
-
-  function toggleTheme() {
-    return null;
-  }
 
   return (
     <div className="sorting-visualizer">
@@ -24,7 +20,6 @@ function SortingVisualizer() {
         dispatchAnimation={dispatchAnimation}
       ></Toolbar>
       <Body animationState={animation}></Body>
-      {/* <button style={{position:"fixed", bottom:5, width:"100vw"}}onClick={toggleTheme}>Toggle Theme</button> */}
     </div>
   );
 }
