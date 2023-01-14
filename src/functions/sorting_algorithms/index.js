@@ -1,0 +1,5 @@
+export {default as mergeSort} from "./merge_sort.js"
+export {default as quickSort} from "./quick_sort.js"
+export {default as heapSort} from "./heap_sort.js"
+export {default as bubbleSort} from "./bubble_sort.js"
+export {default as insertionSort} from "./insertion_sort.js"

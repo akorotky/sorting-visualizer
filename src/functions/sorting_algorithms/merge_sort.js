@@ -1,69 +1,20 @@
-import { ACTIONS } from "../animationReducer";
-import { sleep } from "../utils";
+import { COLOR } from "../../constants";
 
-const COLORS = {
-  MERGING_IDX: "greenyellow",
-  COPY_IDX: "red",
-};
-async function mergeSort(animation, dispatchAnimation) {
-  const indexRange = [0, animation.array.length - 1];
-  await mergeSortHelper(
-    [...animation.array],
-    [...animation.array],
-    ...indexRange,
-    dispatchAnimation,
-    animation.animationDelay
-  );
-  return animation.array;
+// In-place Mergesort
+function* mergeSort(array) {
+  yield* mergeSortHelper(array, [...array], 0, array.length - 1);
 }
-async function mergeSortHelper(
-  array,
-  auxiliaryArray,
-  startIdx,
-  endIdx,
-  dispatchAnimation,
-  delay
-) {
-  if (endIdx === startIdx) {
+function* mergeSortHelper(array, auxiliaryArray, startIdx, endIdx) {
+  if (endIdx <= startIdx) {
     return;
   }
   const midIdx = Math.floor((startIdx + endIdx) / 2);
-  await mergeSortHelper(
-    auxiliaryArray,
-    array,
-    startIdx,
-    midIdx,
-    dispatchAnimation,
-    delay
-  );
-  await mergeSortHelper(
-    auxiliaryArray,
-    array,
-    midIdx + 1,
-    endIdx,
-    dispatchAnimation,
-    delay
-  );
-  await mergeLeftRight(
-    array,
-    auxiliaryArray,
-    startIdx,
-    midIdx,
-    endIdx,
-    dispatchAnimation,
-    delay
-  );
+  yield* mergeSortHelper(auxiliaryArray, array, startIdx, midIdx);
+  yield* mergeSortHelper(auxiliaryArray, array, midIdx + 1, endIdx);
+  yield* mergeLeftRight(array, auxiliaryArray, startIdx, midIdx, endIdx);
 }
 
-async function mergeLeftRight(
-  array,
-  auxiliaryArray,
-  startIdx,
-  midIdx,
-  endIdx,
-  dispatchAnimation,
-  delay
-) {
+function* mergeLeftRight(array, auxiliaryArray, startIdx, midIdx, endIdx) {
   let i = startIdx,
     j = midIdx + 1,
     copyFromIdx = null;
@@ -76,21 +27,16 @@ async function mergeLeftRight(
       copyFromIdx = j;
       array[k] = auxiliaryArray[j++];
     }
-    dispatchAnimation({
-      type: ACTIONS.SET_INDEX_COLOR,
-      payload: [
-        [k, COLORS.MERGING_IDX],
-        [copyFromIdx, COLORS.COPY_IDX],
+
+    yield {
+      color: [
+        [k, COLOR.GREEN],
+        [copyFromIdx, COLOR.RED],
       ],
-    });
-    dispatchAnimation({ type: ACTIONS.SET_ARRAY, payload: [...array] });
+    };
 
-    await sleep(delay);
-
-    dispatchAnimation({
-      type: ACTIONS.CLEAR_INDEX_COLOR,
-      payload: [k, copyFromIdx],
-    });
+    yield { replace: [k, auxiliaryArray[copyFromIdx]] };
+    yield { clearColor: [k, copyFromIdx] };
   }
 }
 

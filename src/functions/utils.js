@@ -1,3 +1,5 @@
+import { COLOR } from "../constants";
+
 // Durstenfeld shuffle algorithm
 function shuffle(array) {
   const shuffledArray = [...array];
@@ -5,7 +7,7 @@ function shuffle(array) {
     let j = Math.floor(Math.random() * (i + 1));
     [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
   }
-  return shuffledArray;
+  return [...shuffledArray];
 }
 
 function generateArray(size) {
@@ -26,4 +28,21 @@ function sleep(delay) {
   return new Promise((resolve) => setTimeout(resolve, delay));
 }
 
-export { getRandomIntFromRange, sleep, generateArray, shuffle };
+function* swap(array, i, j) {
+  const tmp = array[i];
+  array[i] = array[j];
+  array[j] = tmp;
+
+  yield {
+    color: [
+      [i, COLOR.RED],
+      [j, COLOR.GREEN],
+    ],
+  };
+
+  yield { replace: [i, array[i]] };
+  yield { replace: [j, array[j]] };
+
+  yield { clearColor: [i, j] };
+}
+export { getRandomIntFromRange, sleep, generateArray, shuffle, swap };

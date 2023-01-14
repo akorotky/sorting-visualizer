@@ -1,57 +1,31 @@
-import { ACTIONS } from "../animationReducer";
-import { sleep } from "../utils";
+import { COLOR } from "../../constants";
 
-const COLORS = {
-  SWAP: ["red", "greenyellow"],
-};
-
-async function insertionSort(animation, dispatchAnimation) {
-  return await insertionSortHelper(
-    animation.array,
-    dispatchAnimation,
-    animation.animationDelay
-  );
-}
-
-async function insertionSortHelper(array, dispatchAnimation, delay) {
+function* insertionSort(array) {
   for (let i = 1; i < array.length; i++) {
-    dispatchAnimation({
-      type: ACTIONS.SET_INDEX_COLOR,
-      payload: [[i, COLORS.SWAP[1]]],
-    });
+    yield { color: [[i, COLOR.GREEN]] };
     for (let j = i; j > 0; j--) {
       if (array[j] < array[j - 1]) {
-        await swap(array, j - 1, j, dispatchAnimation, delay);
+        yield* swap(array, j - 1, j);
       } else break;
     }
-    dispatchAnimation({
-      type: ACTIONS.CLEAR_INDEX_COLOR,
-      payload: [i],
-    });
+    yield { clearColor: [i] };
   }
-  return array;
 }
 
-async function swap(array, i, j, dispatchAnimation, delay) {
+function* swap(array, i, j) {
   const tmp = array[i];
   array[i] = array[j];
   array[j] = tmp;
 
-  dispatchAnimation({
-    type: ACTIONS.SET_INDEX_COLOR,
-    payload: [[i, COLORS.SWAP[0]]],
-  });
+  yield {
+    color: [
+      [i, COLOR.RED]
+    ],
+  };
 
-  dispatchAnimation({
-    type: ACTIONS.SET_ARRAY,
-    payload: [...array],
-  });
+  yield { replace: [i, array[i]] };
+  yield { replace: [j, array[j]] };
 
-  await sleep(delay);
-
-  dispatchAnimation({
-    type: ACTIONS.CLEAR_INDEX_COLOR,
-    payload: [i],
-  });
+  yield { clearColor: [i] };
 }
 export default insertionSort;
