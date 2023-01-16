@@ -10,6 +10,8 @@ function Toolbar({ animationState, dispatchAnimation }) {
   const [isAnimationPaused, setIsAnimationPaused] = useState(false);
   const animationGenerator = useRef();
   const canRender = useRef(false);
+  const sortSelectionRef = useRef();
+  const canStopAnimation = useRef(false);
 
   function changeArraySize(e) {
     // target value is a string
@@ -17,7 +19,7 @@ function Toolbar({ animationState, dispatchAnimation }) {
 
     dispatchAnimation({
       type: ACTIONS.SET_ARRAY,
-      payload: [...generateArray(newArraySize)],
+      payload: generateArray(newArraySize),
     });
     dispatchAnimation({ type: ACTIONS.SET_SORTED_STATE, payload: false });
   }
@@ -29,11 +31,7 @@ function Toolbar({ animationState, dispatchAnimation }) {
 
   function shuffleArray(array) {
     // clear bar colors
-    const indicesToClear = array.map((val, idx) => idx);
-    dispatchAnimation({
-      type: ACTIONS.CLEAR_INDEX_COLOR,
-      payload: indicesToClear,
-    });
+    resetColors(array);
 
     dispatchAnimation({
       type: ACTIONS.SET_ARRAY,
@@ -42,6 +40,9 @@ function Toolbar({ animationState, dispatchAnimation }) {
 
     dispatchAnimation({ type: ACTIONS.SET_SORTED_STATE, payload: false });
   }
+  useEffect(() => {
+    if (canStopAnimation.current) reset(animationArray);
+  }, [animationArray]);
 
   // sorting animation loop
   useEffect(() => {
@@ -50,7 +51,11 @@ function Toolbar({ animationState, dispatchAnimation }) {
     if (canAnimate) {
       // must wait for the last animation to finish
       canRender.current = false;
-      animateSort(animationArray, animationGenerator.current, animationDelay);
+      animateSort(
+        animationState.animationArray,
+        animationGenerator.current,
+        animationDelay
+      );
     }
   });
 
@@ -103,17 +108,59 @@ function Toolbar({ animationState, dispatchAnimation }) {
     setIsAnimationPaused(!isAnimationPaused);
   }
 
+  function reset(array) {
+    canStopAnimation.current = false;
+    resetColors(array);
+    setIsAnimationRunning(false);
+    setIsAnimationPaused(false);
+  }
+
+  function stopAnimation() {
+    canStopAnimation.current = true;
+  }
+
+  function resetColors(array) {
+    const indicesToClear = array.map((val, idx) => idx);
+    dispatchAnimation({
+      type: ACTIONS.CLEAR_INDEX_COLOR,
+      payload: indicesToClear,
+    });
+  }
+
   return (
     <div className="toolbar-container">
       <button
+        className="toolbar-btn"
         onClick={() => shuffleArray(animationArray)}
         disabled={isAnimationRunning}
       >
         Shuffle Array
       </button>
-      <button onClick={pauseSorting} disabled={!isAnimationRunning}>
+
+      <button
+        className="toolbar-btn"
+        onClick={stopAnimation}
+        disabled={!isAnimationRunning}
+      >
+        Stop Sort
+      </button>
+      <button
+        className="toolbar-btn"
+        onClick={pauseSorting}
+        disabled={!isAnimationRunning}
+      >
         Pause/Resume Sort
       </button>
+      <button
+        className="toolbar-btn"
+        onClick={() =>
+          sort(animationArray, Algorithms[sortSelectionRef.current.value])
+        }
+        disabled={isAnimationRunning}
+      >
+        Sort
+      </button>
+
       <div className="slider">
         <label htmlFor="changeSize">Array Size</label>
         <input
@@ -138,38 +185,19 @@ function Toolbar({ animationState, dispatchAnimation }) {
           value={100 - animationDelay}
           onChange={changeSortingSpeed}
         />
-        {100 - animationDelay} %
+        {100 - animationDelay + 1} %
       </div>
-      <button
-        onClick={() => sort(animationArray, Algorithms.quickSort)}
+      <select
+        className="sort-select"
+        ref={sortSelectionRef}
         disabled={isAnimationRunning}
       >
-        Quick Sort
-      </button>
-      <button
-        onClick={() => sort(animationArray, Algorithms.mergeSort)}
-        disabled={isAnimationRunning}
-      >
-        Merge Sort
-      </button>
-      <button
-        onClick={() => sort(animationArray, Algorithms.heapSort)}
-        disabled={isAnimationRunning}
-      >
-        Heap Sort
-      </button>
-      <button
-        onClick={() => sort(animationArray, Algorithms.bubbleSort)}
-        disabled={isAnimationRunning}
-      >
-        Bubble Sort
-      </button>
-      <button
-        onClick={() => sort(animationArray, Algorithms.insertionSort)}
-        disabled={isAnimationRunning}
-      >
-        Insertion Sort
-      </button>
+        <option value="quickSort">Quick Sort</option>
+        <option value="mergeSort">Merge Sort</option>
+        <option value="heapSort">Heap Sort</option>
+        <option value="bubbleSort">Bubble Sort</option>
+        <option value="insertionSort">Insertion Sort</option>
+      </select>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { BAR_HEIGHT_RATIO, BAR_WIDTH_RATIO, COLOR } from "../constants";
+import { COLOR } from "../constants";
 import "./Body.css";
 
 function Body({ animationState }) {
@@ -11,17 +11,21 @@ function Body({ animationState }) {
     } else return COLOR.DEFAULT[idx % 3];
   }
 
+  const resizeFactor = 100 / animationArray.length;
+
   return (
     <div className="array-container">
       {animationArray?.map((value, idx) => (
         <div
           className="array-bar"
           style={{
-            height: `${value * BAR_HEIGHT_RATIO(animationArray.length)}vh`,
-            width: `${BAR_WIDTH_RATIO(animationArray.length)}vw`,
+            height: `${(value * resizeFactor) / 1.4}vh`,
+            width: `${resizeFactor}vw`,
+            boxShadow: `${0.1 * resizeFactor}vw ${0.2 * resizeFactor}vh black`,
+            margin: `0 ${0.1 * resizeFactor}vw`,
             backgroundColor: getBarColor(idx),
           }}
-          key={`${value} ${idx}`}
+          key={`${idx} ${value}`}
         ></div>
       ))}
     </div>

@@ -4,11 +4,5 @@
   align-items: flex-end; /* make the bars face upwards*/
   height: 100%;
   padding: 3%;
-  background-color: 	whitesmoke
+  background-color: #2f333b;
 }
-/* 
-.array-bar {
-  background-color: rgb(58, 176, 255);
-  background-color: white; 
-   margin: 0 1px; 
-}*/
