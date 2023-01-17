@@ -136,31 +136,24 @@ function Toolbar({ animationState, dispatchAnimation }) {
       >
         Shuffle Array
       </button>
-
-      <button
-        className="toolbar-btn"
-        onClick={stopAnimation}
-        disabled={!isAnimationRunning}
-      >
-        Stop Sort
-      </button>
       <button
         className="toolbar-btn"
         onClick={pauseSorting}
         disabled={!isAnimationRunning}
       >
-        Pause/Resume Sort
+        {isAnimationPaused ? "Resume" : "Pause"} Sort
       </button>
       <button
         className="toolbar-btn"
-        onClick={() =>
-          sort(animationArray, Algorithms[sortSelectionRef.current.value])
+        onClick={
+          isAnimationRunning
+            ? stopAnimation
+            : () =>
+                sort(animationArray, Algorithms[sortSelectionRef.current.value])
         }
-        disabled={isAnimationRunning}
       >
-        Sort
+        {isAnimationRunning ? "Stop" : ""} Sort
       </button>
-
       <div className="slider">
         <label htmlFor="changeSize">Array Size</label>
         <input
