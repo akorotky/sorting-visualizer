@@ -1,4 +1,4 @@
-import { COLOR } from "../constants";
+import { COLOR } from "../other/constants";
 
 // Durstenfeld shuffle algorithm
 function shuffle(array) {
@@ -40,8 +40,12 @@ function* swap(array, i, j) {
     ],
   };
 
-  yield { replace: [i, array[i]] };
-  yield { replace: [j, array[j]] };
+  yield {
+    replace: [
+      [i, array[i]],
+      [j, array[j]],
+    ],
+  };
 
   yield { clearColor: [i, j] };
 }

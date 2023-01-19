@@ -1,21 +1,22 @@
-import { COLOR } from "../constants";
+import { useSelector } from "react-redux";
+import { COLOR } from "../other/constants";
 import "./Body.css";
 
-function Body({ animationState }) {
-  const { animationArray, isArraySorted, coloredIndices } = animationState;
+function Body(props) {
+  const animation = useSelector((state) => state.animation);
 
   function getBarColor(idx) {
-    if (isArraySorted) return COLOR.SORTED[idx % 3];
-    else if (idx in coloredIndices) {
-      return coloredIndices[idx];
+    if (animation.isSorted) return COLOR.SORTED[idx % 3];
+    else if (idx in animation.coloredIndices) {
+      return animation.coloredIndices[idx];
     } else return COLOR.DEFAULT[idx % 3];
   }
 
-  const resizeFactor = 100 / animationArray.length;
+  const resizeFactor = 100 / animation.array.length;
 
   return (
     <div className="array-container">
-      {animationArray?.map((value, idx) => (
+      {animation.array?.map((value, idx) => (
         <div
           className="array-bar"
           style={{

@@ -1,5 +1,5 @@
-import { COLOR } from "../../constants";
-import { swap } from "../utils";
+import { COLOR } from "../../other/constants";
+import { swap } from "../common";
 
 // In-place Quicksort implementing Hoare partition
 // using the middle element as the pivot
@@ -38,7 +38,6 @@ function* partition(array, startIdx, endIdx) {
     if (i >= j) {
       // clear pivot
       yield { clearColor: [mid] };
-
       return j;
     }
 

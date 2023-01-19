@@ -1,4 +1,4 @@
-import { COLOR } from "../../constants";
+import { COLOR } from "../../other/constants";
 
 function* insertionSort(array) {
   for (let i = 1; i < array.length; i++) {
@@ -23,8 +23,8 @@ function* swap(array, i, j) {
     ],
   };
 
-  yield { replace: [i, array[i]] };
-  yield { replace: [j, array[j]] };
+  yield { replace: [[i, array[i]]] };
+  yield { replace: [[j, array[j]]] };
 
   yield { clearColor: [i] };
 }

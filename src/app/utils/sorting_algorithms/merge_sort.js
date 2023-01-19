@@ -1,4 +1,4 @@
-import { COLOR } from "../../constants";
+import { COLOR } from "../../other/constants";
 
 // In-place Mergesort
 function* mergeSort(array) {
@@ -35,7 +35,7 @@ function* mergeLeftRight(array, auxiliaryArray, startIdx, midIdx, endIdx) {
       ],
     };
 
-    yield { replace: [k, auxiliaryArray[copyFromIdx]] };
+    yield { replace: [[k, auxiliaryArray[copyFromIdx]]] };
     yield { clearColor: [k, copyFromIdx] };
   }
 }

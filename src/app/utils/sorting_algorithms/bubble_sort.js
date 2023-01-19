@@ -1,5 +1,5 @@
-import { COLOR } from "../../constants";
-import { swap } from "../utils";
+import { COLOR } from "../../other/constants";
+import { swap } from "../common";
 
 function* bubbleSort(array) {
   let isSorted = false;
