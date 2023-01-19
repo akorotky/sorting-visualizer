@@ -42,6 +42,7 @@ function* partition(array, startIdx, endIdx) {
     }
 
     yield* swap(array, i, j);
+    yield { color: [[mid, COLOR.YELLOW]] };
   }
 }
 

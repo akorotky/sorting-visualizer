@@ -128,7 +128,7 @@ function Toolbar(props) {
         className="toolbar-btn"
         onClick={
           animation.isRunning
-            ? stopAnimation(animation.array)
+            ? () => stopAnimation(animation.array)
             : () =>
                 sort(
                   animation.array,
