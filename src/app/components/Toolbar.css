@@ -1,27 +1,33 @@
 .toolbar-container {
   display: flex;
   justify-content: center;
-  column-gap: 5vw;
-  margin: 5vmin;
+  column-gap: 6vw;
+  margin: 2vmax;
   background-color: #43464b;
 }
 
 .slider {
   display: flex;
+  justify-content: center;
   flex-direction: column;
   text-align: center;
   color: white;
+  font-size: 1vw;
 }
 
 .toolbar-btn {
   font-size: 1vw;
   cursor: pointer;
-  padding: 2vmin;
+  padding: 1vmax;
+}
+
+input[type="range"] {
+  max-width: 7vw;
 }
 
 .sort-select {
   outline: none;
-  padding: 2vmin;
+  padding: 1vmax;
   font-size: 1vw;
 
   border-color: rgb(0, 0, 0);

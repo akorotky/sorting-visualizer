@@ -21,6 +21,17 @@ function Toolbar(props) {
   const animationGenerator = useRef();
   const sortSelectionRef = useRef();
 
+  // sorting animation loop
+  useEffect(() => {
+    const canAnimate = animation.isRunning && !animation.isPaused;
+    if (canAnimate) {
+      const animationID = setInterval(() => {
+        animateSort(animation.array, animationGenerator.current);
+      }, animation.delay);
+      return () => clearInterval(animationID);
+    }
+  }, [animation]);
+
   function changeArraySize(e) {
     // target value is a string
     const newArraySize = parseInt(e.target.value);
@@ -38,36 +49,21 @@ function Toolbar(props) {
   function shuffleArray(array) {
     // clear bar colors
     resetColors(array);
+
     dispatch(setArray(shuffle(array)));
     dispatch(setIsSorted(false));
   }
 
-  // sorting animation loop
-  useEffect(() => {
-    const canAnimate = animation.isRunning && !animation.isPaused;
-    if (canAnimate) {
-      const animationID = setInterval(() => {
-        animateSort(
-          animation.array,
-          animationGenerator.current,
-          animation.delay
-        );
-      }, animation.delay);
-      return () => clearInterval(animationID);
-    }
-  }, [animation]);
-
   function sort(array, sortingFunction) {
-    dispatch(setIsRunning(true));
     animationGenerator.current = sortingFunction([...array]);
+    dispatch(setIsRunning(true));
   }
 
   function animateSort(array, animationGenerator) {
     const currentAnimation = animationGenerator.next().value;
     if (!currentAnimation) {
+      stopAnimation(array);
       dispatch(setIsSorted(true));
-      dispatch(setIsRunning(false));
-      animationGenerator = undefined;
     } else {
       visualizeAnimation(currentAnimation, array);
     }
@@ -108,6 +104,15 @@ function Toolbar(props) {
     dispatch(clearIndexColor(indicesToClear));
   }
 
+  function handleAnimationRun(array) {
+    if (animation.isRunning) {
+      stopAnimation(array);
+    } else {
+      const selectedSort = sortSelectionRef.current.value;
+      sort(array, Algorithms[selectedSort]);
+    }
+  }
+
   return (
     <div className="toolbar-container">
       <button
@@ -121,20 +126,14 @@ function Toolbar(props) {
         className="toolbar-btn"
         onClick={pauseSorting}
         disabled={!animation.isRunning}
+        style={{ width: "6vw" }}
       >
         {animation.isPaused ? "Resume" : "Pause"} Sort
       </button>
       <button
         className="toolbar-btn"
-        onClick={
-          animation.isRunning
-            ? () => stopAnimation(animation.array)
-            : () =>
-                sort(
-                  animation.array,
-                  Algorithms[sortSelectionRef.current.value]
-                )
-        }
+        onClick={() => handleAnimationRun(animation.array)}
+        style={{ width: "5vw" }}
       >
         {animation.isRunning ? "Stop" : ""} Sort
       </button>
