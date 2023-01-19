@@ -1,37 +1,42 @@
+import { swap } from "../common";
 
-
-async function heapSort(animation, dispatchAnimation) {
-  await heapSortHelper(
-    animation.array,
-    dispatchAnimation,
-    animation.animationDelay
-  );
-  return animation.array;
+function* heapSort(array) {
+  yield* heapify(array);
+  let endIdx = array.length - 1;
+  while (endIdx > 0) {
+    yield* swap(array, 0, endIdx);
+    endIdx--;
+    yield* siftDown(array, 0, endIdx);
+  }
 }
-async function heapSortHelper(array, dispatchAnimation, delay) {
-  let size = array.length;
-
-  for (let i = Math.floor(size / 2 - 1); i >= 0; i--)
-    await heapify(array, size, i, dispatchAnimation, delay);
-
-  for (let i = size - 1; i >= 0; i--) {
-    await swap(array, 0, i, dispatchAnimation, delay);
-    await heapify(array, i, 0, dispatchAnimation, delay);
+function* heapify(array) {
+  let startIdx = Math.floor((array.length - 2) / 2);
+  while (startIdx >= 0) {
+    yield* siftDown(array, startIdx, array.length - 1);
+    startIdx--;
   }
 }
 
-async function heapify(array, size, i, dispatchAnimation, delay) {
-  let max = i;
-  let left = 2 * i + 1;
-  let right = 2 * i + 2;
+function* siftDown(array, startIdx, endIdx) {
+  let rootIdx = startIdx;
+  let leftRootChildIdx = 2 * rootIdx + 1;
+  while (leftRootChildIdx <= endIdx) {
+    let childIdx = leftRootChildIdx;
+    let swapIdx = rootIdx;
 
-  if (left < size && array[left] > array[max]) max = left;
-
-  if (right < size && array[right] > array[max]) max = right;
-
-  if (max != i) {
-    await swap(array, i, max, dispatchAnimation, delay);
-    await heapify(array, size, max, dispatchAnimation, delay);
+    if (array[swapIdx] < array[childIdx]) {
+      swapIdx = childIdx;
+    }
+    if (childIdx + 1 <= endIdx && array[swapIdx] <= array[childIdx + 1]) {
+      swapIdx = childIdx + 1;
+    }
+    if (swapIdx === rootIdx) {
+      return;
+    } else {
+      yield* swap(array, rootIdx, swapIdx);
+      rootIdx = swapIdx;
+      leftRootChildIdx = 2 * rootIdx + 1;
+    }
   }
 }
 
