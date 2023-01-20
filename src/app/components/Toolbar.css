@@ -27,10 +27,6 @@ input[type="range"] {
 
 .sort-select {
   outline: none;
-  padding: 1vmax;
+  text-align: center;
   font-size: 1vw;
-
-  border-color: rgb(0, 0, 0);
-  background-color: white;
-  background-image: none;
 }

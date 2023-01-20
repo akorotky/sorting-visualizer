@@ -168,11 +168,14 @@ function Toolbar(props) {
         ref={sortSelectionRef}
         disabled={animation.isRunning}
       >
-        <option value="quickSort">Quick Sort</option>
-        <option value="mergeSort">Merge Sort</option>
-        <option value="heapSort">Heap Sort</option>
+        <option value="quickSort">Quicksort</option>
+        <option value="mergeSort">Mergesort</option>
+        <option value="heapSort">Heapsort</option>
         <option value="bubbleSort">Bubble Sort</option>
         <option value="insertionSort">Insertion Sort</option>
+        <option value="introSort1">Introsort Bottom-Up</option>
+        <option value="introSort2">Introsort Top-Down</option>
+        <option value="introSort3">Introsort Insertion-Last</option>
       </select>
     </div>
   );

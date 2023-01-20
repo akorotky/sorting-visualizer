@@ -1,19 +1,16 @@
 import { swap } from "../common";
 
-function* heapSort(array) {
-  yield* heapify(array);
-  let endIdx = array.length - 1;
-  while (endIdx > 0) {
-    yield* swap(array, 0, endIdx);
-    endIdx--;
-    yield* siftDown(array, 0, endIdx);
+function* heapSort(array, startIdx = 0, endIdx = array.length - 1) {
+  yield* heapify(array, startIdx, endIdx);
+  while (endIdx > startIdx) {
+    yield* swap(array, startIdx, endIdx);
+    yield* siftDown(array, startIdx, --endIdx);
   }
 }
-function* heapify(array) {
-  let startIdx = Math.floor((array.length - 2) / 2);
-  while (startIdx >= 0) {
-    yield* siftDown(array, startIdx, array.length - 1);
-    startIdx--;
+function* heapify(array, startIdx = 0, endIdx = array.length - 1) {
+  let curIdx = Math.floor((endIdx - startIdx) / 2);
+  while (curIdx >= 0) {
+    yield* siftDown(array, curIdx--, endIdx);
   }
 }
 

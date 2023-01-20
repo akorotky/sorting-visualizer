@@ -49,4 +49,46 @@ function* swap(array, i, j) {
 
   yield { clearColor: [i, j] };
 }
-export { getRandomIntFromRange, sleep, generateArray, shuffle, swap };
+
+function* partition(array, startIdx, endIdx) {
+  // set pivot index
+  const mid = Math.floor(startIdx + (endIdx - startIdx) / 2);
+
+  yield { color: [[mid, COLOR.YELLOW]] };
+
+  const pivot = array[mid];
+  let i = startIdx - 1,
+    j = endIdx + 1;
+
+  while (true) {
+    do {
+      i++;
+    } while (array[i] < pivot);
+    do {
+      j--;
+    } while (array[j] > pivot);
+
+    if (i >= j) {
+      // clear pivot
+      yield { clearColor: [mid] };
+      return j;
+    }
+
+    yield* swap(array, i, j);
+    yield { color: [[mid, COLOR.YELLOW]] };
+  }
+}
+
+function logBase2(num) {
+  return Math.floor(Math.log(num) / Math.log(2));
+}
+
+export {
+  getRandomIntFromRange,
+  sleep,
+  generateArray,
+  shuffle,
+  swap,
+  partition,
+  logBase2,
+};
