@@ -1,23 +1,23 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setArray,
-  setIsSorted,
   setIndexColor,
   clearIndexColor,
   setDelay,
   setIsRunning,
   setIsPaused,
 } from "../features/animationSlice";
+import { COLOR } from "../other/constants";
 
-import { generateArray, shuffle } from "../utils/common";
+import { generateArray, sleep } from "../utils/common";
 import * as Algorithms from "../utils/sorting_algorithms";
 import "./Toolbar.css";
 
 function Toolbar(props) {
   const animation = useSelector((state) => state.animation);
   const dispatch = useDispatch();
-
+  const [canRun, setCanRun] = useState(true);
   const animationGenerator = useRef();
   const sortSelectionRef = useRef();
 
@@ -32,26 +32,73 @@ function Toolbar(props) {
     }
   }, [animation]);
 
+  function getShuffleDelay(arraySize) {
+    return (20 * 100) / arraySize;
+  }
+  function getSortedDelay(arraySize) {
+    return (10 * 100) / arraySize;
+  }
+
+  async function sortedAnimation(array) {
+    setCanRun(false);
+
+    const delay = getSortedDelay(array.length);
+    const animatedAreaRange = Math.floor(array.length / 5);
+
+    for (let i = 0; i < array.length + animatedAreaRange; i++) {
+      if (i - animatedAreaRange >= 0) {
+        dispatch(clearIndexColor([i - animatedAreaRange]));
+      }
+      if (i < array.length) {
+        const toDispatch = [[i, COLOR.SORTED[i % 3]]];
+        dispatch(setIndexColor(toDispatch));
+      }
+      await sleep(delay);
+    }
+    resetColors(array);
+    setCanRun(true);
+  }
+
+  async function shuffleAnimation(array) {
+    resetColors(array);
+    setCanRun(false);
+
+    const delay = getShuffleDelay(array.length);
+    const shuffledArray = [...array];
+
+    for (let i = 0; i < array.length; i++) {
+      let j = Math.floor(Math.random() * (i + 1));
+
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+
+      const toDispatch = [
+        [i, COLOR.GREEN],
+        [j, COLOR.RED],
+      ];
+      dispatch(setIndexColor(toDispatch));
+
+      await sleep(delay);
+
+      dispatch(setArray([...shuffledArray]));
+      dispatch(clearIndexColor([i, j]));
+    }
+    setCanRun(true);
+  }
+
   function changeArraySize(e) {
     // target value is a string
     const newArraySize = parseInt(e.target.value);
 
     dispatch(setArray(generateArray(newArraySize)));
-    dispatch(setIsSorted(false));
   }
 
   function changeSortingSpeed(e) {
     const newSpeed = 100 - parseInt(e.target.value);
 
     dispatch(setDelay(newSpeed));
-  }
-
-  function shuffleArray(array) {
-    // clear bar colors
-    resetColors(array);
-
-    dispatch(setArray(shuffle(array)));
-    dispatch(setIsSorted(false));
   }
 
   function sort(array, sortingFunction) {
@@ -63,7 +110,7 @@ function Toolbar(props) {
     const currentAnimation = animationGenerator.next().value;
     if (!currentAnimation) {
       stopAnimation(array);
-      dispatch(setIsSorted(true));
+      sortedAnimation(array);
     } else {
       visualizeAnimation(currentAnimation, array);
     }
@@ -117,8 +164,8 @@ function Toolbar(props) {
     <div className="toolbar-container">
       <button
         className="toolbar-btn"
-        onClick={() => shuffleArray(animation.array)}
-        disabled={animation.isRunning}
+        onClick={() => shuffleAnimation(animation.array)}
+        disabled={animation.isRunning || !canRun}
       >
         Shuffle Array
       </button>
@@ -134,6 +181,7 @@ function Toolbar(props) {
         className="toolbar-btn"
         onClick={() => handleAnimationRun(animation.array)}
         style={{ width: "5vw" }}
+        disabled={!canRun}
       >
         {animation.isRunning ? "Stop" : ""} Sort
       </button>

@@ -6,8 +6,7 @@ function Body(props) {
   const animation = useSelector((state) => state.animation);
 
   function getBarColor(idx) {
-    if (animation.isSorted) return COLOR.SORTED[idx % 3];
-    else if (idx in animation.coloredIndices) {
+    if (idx in animation.coloredIndices) {
       return animation.coloredIndices[idx];
     } else return COLOR.DEFAULT[idx % 3];
   }

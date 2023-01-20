@@ -9,7 +9,6 @@ import { generateArray } from "../utils/common";
 const initialState = {
   array: generateArray(INITIAL_ARRAY_SIZE),
   coloredIndices: {},
-  isSorted: false,
   isRunning: false,
   isPaused: false,
   delay: INITIAL_ANIMATION_DELAY,
@@ -21,9 +20,6 @@ const animationSlice = createSlice({
   reducers: {
     setArray: (state, action) => {
       state.array = [...action.payload];
-    },
-    setIsSorted: (state, action) => {
-      state.isSorted = action.payload;
     },
     setIndexColor: (state, action) => {
       const indexColorPairs = action.payload;
@@ -53,7 +49,6 @@ const animationSlice = createSlice({
 
 export const {
   setArray,
-  setIsSorted,
   setIndexColor,
   clearIndexColor,
   setDelay,
