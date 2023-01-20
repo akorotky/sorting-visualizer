@@ -1,6 +1,6 @@
 import { logBase2, partition } from "../common";
-import insertionSort from "./insertion_sort";
-import heapSort from "./heap_sort";
+import insertionSort from "./insertion-sort";
+import heapSort from "./heap-sort";
 
 const SIZE_THRESHOLD = 16;
 

@@ -3,6 +3,6 @@
   justify-content: center;
   align-items: flex-end; /* make the bars face upwards*/
   height: 100%;
-  padding: 3%;
+  padding: 2.5vmax;
   background-color: #2f333b;
 }

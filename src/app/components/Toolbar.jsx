@@ -7,7 +7,7 @@ import {
   setDelay,
   setIsRunning,
   setIsPaused,
-} from "../features/animationSlice";
+} from "../features/animation-slice";
 import { COLOR } from "../other/constants";
 
 import { generateArray, sleep } from "../utils/common";
