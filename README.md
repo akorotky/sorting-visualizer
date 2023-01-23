@@ -4,11 +4,13 @@ Sorting visualizer is a tool for visualizing array sorting algorithms.
 I made this project to help me and others learn more about sorting algorithms and to better understand how they work. 
 
 So far the project allows to visualize the following algorithms:
-* Insertion Sort
 * Bubble Sort
-* Quicksort
-* Mergesort
+* Selection Sort
+* Insertion Sort
 * Heapsort
+* Mergesort
+* Quicksort
+* Counting Sort
 * Introsort (3 variants) 
 
 And I am going to add more sorting algorithms when I can. 
