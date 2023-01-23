@@ -1,6 +1,5 @@
 import { COLOR } from "../../other/constants";
 
-// In-place Mergesort
 function* mergeSort(array) {
   yield* mergeSortHelper(array, [...array], 0, array.length - 1);
 }
