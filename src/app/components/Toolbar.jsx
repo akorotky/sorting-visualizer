@@ -9,7 +9,6 @@ import {
   setIsPaused,
 } from "../features/animation-slice";
 import { COLOR } from "../other/constants";
-
 import { generateArray, sleep } from "../utils/common";
 import * as Algorithms from "../utils/sorting_algorithms";
 import "./Toolbar.css";
@@ -90,8 +89,14 @@ function Toolbar(props) {
 
   function changeArraySize(e) {
     // target value is a string
-    const newArraySize = parseInt(e.target.value);
-
+    const sliderValue = parseInt(e.target.value);
+    const selectedSort = sortSelectionRef.current?.value;
+    const newArraySize =
+      selectedSort === "bitonicSort"
+        ? sliderValue < 10
+          ? 2 ** sliderValue
+          : 128
+        : sliderValue;
     dispatch(setArray(generateArray(newArraySize)));
   }
 
@@ -160,6 +165,26 @@ function Toolbar(props) {
     }
   }
 
+  function sliderStep() {
+    const selectedSort = sortSelectionRef.current?.value;
+    return selectedSort === "bitonicSort" ? 1 : 5;
+  }
+
+  function sliderMinValue() {
+    const selectedSort = sortSelectionRef.current?.value;
+    return selectedSort === "bitonicSort" ? 3 : 10;
+  }
+  function sliderMaxValue() {
+    const selectedSort = sortSelectionRef.current?.value;
+    return selectedSort === "bitonicSort" ? 9 : 800;
+  }
+
+  function sliderValue(array) {
+    const selectedSort = sortSelectionRef.current?.value;
+    const value = document.getElementById("sizeSlider")?.value;
+    return selectedSort === "bitonicSort" ? value : array.length;
+  }
+
   return (
     <div className="toolbar-container">
       <button
@@ -186,23 +211,23 @@ function Toolbar(props) {
         {animation.isRunning ? "Stop" : ""} Sort
       </button>
       <div className="slider">
-        <label htmlFor="changeSize">Array Size</label>
+        <label htmlFor="sizeSlider">Array Size</label>
         <input
-          id="changeSize"
+          id="sizeSlider"
           type="range"
-          min="10"
-          max="800"
-          step="5"
-          value={animation.array.length}
+          min={sliderMinValue()}
+          max={sliderMaxValue()}
+          step={sliderStep()}
+          value={sliderValue(animation.array)}
           onChange={changeArraySize}
-          disabled={animation.isRunning}
-        />
+          disabled={animation.isRunning || !canRun}
+        ></input>
         {animation.array.length}
       </div>
       <div className="slider">
-        <label htmlFor="changeSpeed">Sorting Speed</label>
+        <label htmlFor="speedSlider">Sorting Speed</label>
         <input
-          id="changeSpeed"
+          id="speedSlider"
           type="range"
           min="0"
           max="99"
@@ -217,11 +242,14 @@ function Toolbar(props) {
         disabled={animation.isRunning}
       >
         <option value="bubbleSort">Bubble Sort</option>
+        <option value="cocktailShakerSort">Cocktail Shaker Sort</option>
         <option value="selectionSort">Selection Sort</option>
         <option value="insertionSort">Insertion Sort</option>
+        <option value="shellSort">Shellsort</option>
         <option value="heapSort">Heapsort</option>
-        <option value="mergeSort">Mergesort</option>
+        <option value="mergeSort">Mergesort</option>""
         <option value="quickSort">Quicksort</option>
+        <option value="bitonicSort">Bitonic Sort</option>
         <option value="countingSort">Counting Sort</option>
         <option value="introSort1">Introsort Bottom-Up</option>
         <option value="introSort2">Introsort Top-Down</option>
