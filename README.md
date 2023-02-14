@@ -12,8 +12,9 @@ So far the project allows to visualize the following algorithms:
 * Quicksort
 * Counting Sort
 * Introsort (3 variants) 
-
-And I am going to add more sorting algorithms when I can. 
+* Shellsort
+* Cocktail Shaker Sort
+* Bitonic Sort
 
 This project was bootstrapped using [Vite.js](https://vitejs.dev/)
 
