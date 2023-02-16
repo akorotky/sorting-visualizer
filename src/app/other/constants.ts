@@ -1,5 +1,5 @@
-const INITIAL_ANIMATION_DELAY = 30; // ms
-const INITIAL_ARRAY_SIZE = 100;
+const INITIAL_ANIMATION_DELAY: number = 30; // ms
+const INITIAL_ARRAY_SIZE: number = 100;
 
 const COLOR = {
   RED: "red",

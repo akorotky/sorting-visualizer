@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   setArray,
   setIndexColor,
@@ -8,17 +7,19 @@ import {
   setIsRunning,
   setIsPaused,
 } from "../features/animation-slice";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { COLOR } from "../other/constants";
+import { AnimationDispatcher, AnimationGenerator, GenFunction } from "../types";
 import { generateArray, sleep } from "../utils/common";
 import * as Algorithms from "../utils/sorting_algorithms";
 import "./Toolbar.css";
 
-function Toolbar(props) {
-  const animation = useSelector((state) => state.animation);
-  const dispatch = useDispatch();
-  const [canRun, setCanRun] = useState(true);
-  const animationGenerator = useRef();
-  const sortSelectionRef = useRef();
+function Toolbar() {
+  const animation = useAppSelector((state) => state.animation);
+  const dispatch = useAppDispatch();
+  const [canRun, setCanRun] = useState<boolean>(true);
+  const animationGenerator = useRef<AnimationGenerator | undefined>();
+  const sortSelectionRef = useRef<HTMLSelectElement>(null);
 
   // sorting animation loop
   useEffect(() => {
@@ -31,14 +32,14 @@ function Toolbar(props) {
     }
   }, [animation]);
 
-  function getShuffleDelay(arraySize) {
+  function getShuffleDelay(arraySize: number): number {
     return (20 * 100) / arraySize;
   }
-  function getSortedDelay(arraySize) {
+  function getSortedDelay(arraySize: number): number {
     return (10 * 100) / arraySize;
   }
 
-  async function sortedAnimation(array) {
+  async function sortedAnimation(array: number[]) {
     setCanRun(false);
 
     const delay = getSortedDelay(array.length);
@@ -49,7 +50,7 @@ function Toolbar(props) {
         dispatch(clearIndexColor([i - animatedAreaRange]));
       }
       if (i < array.length) {
-        const toDispatch = [[i, COLOR.SORTED[i % 3]]];
+        const toDispatch: [number, string][] = [[i, COLOR.SORTED[i % 3]]];
         dispatch(setIndexColor(toDispatch));
       }
       await sleep(delay);
@@ -58,7 +59,7 @@ function Toolbar(props) {
     setCanRun(true);
   }
 
-  async function shuffleAnimation(array) {
+  async function shuffleAnimation(array: number[]) {
     resetColors(array);
     setCanRun(false);
 
@@ -73,7 +74,7 @@ function Toolbar(props) {
         shuffledArray[i],
       ];
 
-      const toDispatch = [
+      const toDispatch: [number, string][] = [
         [i, COLOR.GREEN],
         [j, COLOR.RED],
       ];
@@ -87,7 +88,7 @@ function Toolbar(props) {
     setCanRun(true);
   }
 
-  function changeArraySize(e) {
+  function changeArraySize(e: ChangeEvent<HTMLInputElement>) {
     // target value is a string
     const sliderValue = parseInt(e.target.value);
     const selectedSort = sortSelectionRef.current?.value;
@@ -100,43 +101,52 @@ function Toolbar(props) {
     dispatch(setArray(generateArray(newArraySize)));
   }
 
-  function changeSortingSpeed(e) {
+  function changeSortingSpeed(e: ChangeEvent<HTMLInputElement>) {
     const newSpeed = 100 - parseInt(e.target.value);
 
     dispatch(setDelay(newSpeed));
   }
 
-  function sort(array, sortingFunction) {
+  function sort(array: number[], sortingFunction: GenFunction) {
     animationGenerator.current = sortingFunction([...array]);
     dispatch(setIsRunning(true));
   }
 
-  function animateSort(array, animationGenerator) {
-    const currentAnimation = animationGenerator.next().value;
-    if (!currentAnimation) {
+  function animateSort(
+    array: number[],
+    animationGenerator: AnimationGenerator | undefined
+  ) {
+    const currentAnimation = animationGenerator?.next();
+    if (currentAnimation === undefined || currentAnimation.done) {
       stopAnimation(array);
       sortedAnimation(array);
     } else {
-      visualizeAnimation(currentAnimation, array);
+      visualizeAnimation(currentAnimation.value, array);
     }
   }
 
-  function visualizeAnimation(currentAnimation, animationArray) {
-    const { color, clearColor, replace } = currentAnimation;
-    if (replace) {
+  function visualizeAnimation(
+    currentAnimation: AnimationDispatcher | number,
+    animationArray: number[]
+  ) {
+    if (typeof currentAnimation === "number") {
+      return;
+    }
+
+    if (currentAnimation.toReplace !== undefined) {
       const newAnimationArray = [...animationArray];
-      replace.forEach((pair) => {
+      currentAnimation.toReplace.forEach((pair) => {
         const [targetIdx, newVal] = pair;
         newAnimationArray[targetIdx] = newVal;
       });
 
       dispatch(setArray(newAnimationArray));
     }
-    if (color) {
-      dispatch(setIndexColor(color));
+    if (currentAnimation.toColor !== undefined) {
+      dispatch(setIndexColor(currentAnimation.toColor));
     }
-    if (clearColor) {
-      dispatch(clearIndexColor(clearColor));
+    if (currentAnimation.toClear !== undefined) {
+      dispatch(clearIndexColor(currentAnimation.toClear));
     }
   }
 
@@ -144,24 +154,25 @@ function Toolbar(props) {
     dispatch(setIsPaused(!animation.isPaused));
   }
 
-  function stopAnimation(array) {
+  function stopAnimation(arr: number[]) {
     animationGenerator.current = undefined;
-    resetColors(array);
+    resetColors(arr);
     dispatch(setIsRunning(false));
     dispatch(setIsPaused(false));
   }
 
-  function resetColors(array) {
-    const indicesToClear = array.map((val, idx) => idx);
+  function resetColors(arr: number[]) {
+    const indicesToClear = arr.map((val, idx) => idx);
     dispatch(clearIndexColor(indicesToClear));
   }
 
-  function handleAnimationRun(array) {
+  function handleAnimationRun(arr: number[]) {
     if (animation.isRunning) {
-      stopAnimation(array);
+      stopAnimation(arr);
     } else {
-      const selectedSort = sortSelectionRef.current.value;
-      sort(array, Algorithms[selectedSort]);
+      const selectedSort = sortSelectionRef.current?.value;
+      if (selectedSort !== undefined)
+        sort(arr, (Algorithms as { [key: string]: GenFunction })[selectedSort]);
     }
   }
 
@@ -179,9 +190,11 @@ function Toolbar(props) {
     return selectedSort === "bitonicSort" ? 9 : 800;
   }
 
-  function sliderValue(array) {
+  function sliderValue(array: number[]) {
     const selectedSort = sortSelectionRef.current?.value;
-    const value = document.getElementById("sizeSlider")?.value;
+    const value: string = (
+      document.getElementById("sizeSlider") as HTMLInputElement
+    )?.value;
     return selectedSort === "bitonicSort" ? value : array.length;
   }
 
@@ -219,7 +232,7 @@ function Toolbar(props) {
           max={sliderMaxValue()}
           step={sliderStep()}
           value={sliderValue(animation.array)}
-          onChange={changeArraySize}
+          onChange={(e) => changeArraySize(e)}
           disabled={animation.isRunning || !canRun}
         ></input>
         {animation.array.length}

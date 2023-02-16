@@ -1,4 +1,3 @@
-import React from "react";
 import Body from "./Body";
 import Toolbar from "./Toolbar";
 import "./SortingVisualizer.css";
