@@ -3,10 +3,18 @@ import {
   INITIAL_ARRAY_SIZE,
 } from "../other/constants";
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { generateArray } from "../utils/common";
 
-const initialState = {
+interface AnimationState {
+  array: number[];
+  coloredIndices: { [key: number]: string };
+  isRunning: boolean;
+  isPaused: boolean;
+  delay: number;
+}
+
+const initialState: AnimationState = {
   array: generateArray(INITIAL_ARRAY_SIZE),
   coloredIndices: {},
   isRunning: false,
@@ -18,10 +26,10 @@ const animationSlice = createSlice({
   name: "animation",
   initialState,
   reducers: {
-    setArray: (state, action) => {
+    setArray: (state, action: PayloadAction<number[]>) => {
       state.array = [...action.payload];
     },
-    setIndexColor: (state, action) => {
+    setIndexColor: (state, action: PayloadAction<[number, string][]>) => {
       const indexColorPairs = action.payload;
 
       indexColorPairs.forEach((pair) => {
@@ -29,19 +37,19 @@ const animationSlice = createSlice({
         state.coloredIndices[idx] = color;
       });
     },
-    clearIndexColor: (state, action) => {
+    clearIndexColor: (state, action: PayloadAction<number[]>) => {
       const indicesToClear = action.payload;
       indicesToClear.forEach((idx) => {
         delete state.coloredIndices[idx];
       });
     },
-    setDelay: (state, action) => {
+    setDelay: (state, action: PayloadAction<number>) => {
       state.delay = action.payload;
     },
-    setIsRunning: (state, action) => {
+    setIsRunning: (state, action: PayloadAction<boolean>) => {
       state.isRunning = action.payload;
     },
-    setIsPaused: (state, action) => {
+    setIsPaused: (state, action: PayloadAction<boolean>) => {
       state.isPaused = action.payload;
     },
   },

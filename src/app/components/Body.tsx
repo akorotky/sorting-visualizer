@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../hooks";
 import { COLOR } from "../other/constants";
 import "./Body.css";
 
-function Body(props) {
-  const animation = useSelector((state) => state.animation);
+function Body() {
+  const animation = useAppSelector((state) => state.animation);
 
-  function getBarColor(idx) {
+  function getBarColor(idx: number) {
     if (idx in animation.coloredIndices) {
       return animation.coloredIndices[idx];
     } else return COLOR.DEFAULT[idx % 3];
