@@ -9,7 +9,11 @@ import {
 } from "../features/animation-slice";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { COLOR } from "../other/constants";
-import { AnimationDispatcher, AnimationGenerator, GenFunction } from "../types";
+import {
+  AnimationGenerator,
+  AnimationGeneratorFunction,
+  TAnimation,
+} from "../types";
 import { generateArray, sleep } from "../utils/common";
 import * as Algorithms from "../utils/sorting_algorithms";
 import "./Toolbar.css";
@@ -107,7 +111,7 @@ function Toolbar() {
     dispatch(setDelay(newSpeed));
   }
 
-  function sort(array: number[], sortingFunction: GenFunction) {
+  function sort(array: number[], sortingFunction: AnimationGeneratorFunction) {
     animationGenerator.current = sortingFunction([...array]);
     dispatch(setIsRunning(true));
   }
@@ -126,7 +130,7 @@ function Toolbar() {
   }
 
   function visualizeAnimation(
-    currentAnimation: AnimationDispatcher | number,
+    currentAnimation: TAnimation | number,
     animationArray: number[]
   ) {
     if (typeof currentAnimation === "number") {
@@ -172,7 +176,12 @@ function Toolbar() {
     } else {
       const selectedSort = sortSelectionRef.current?.value;
       if (selectedSort !== undefined)
-        sort(arr, (Algorithms as { [key: string]: GenFunction })[selectedSort]);
+        sort(
+          arr,
+          (Algorithms as { [key: string]: AnimationGeneratorFunction })[
+            selectedSort
+          ]
+        );
     }
   }
 

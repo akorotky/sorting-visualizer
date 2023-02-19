@@ -1,6 +1,6 @@
 import { COLOR } from "../../other/constants";
-import { swap } from "../common";
-import { AnimationGenerator, colorIndices } from "../../types";
+import { colorIndices, swap } from "../common";
+import { AnimationGenerator } from "../../types";
 
 function* bubbleSort(arr: number[]): AnimationGenerator {
   let isSorted = false;

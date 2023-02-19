@@ -1,11 +1,5 @@
 import { COLOR } from "../other/constants";
-import {
-  AnimationDispatcher,
-  AnimationGenerator,
-  clearIndices,
-  colorIndices,
-  replaceIndices,
-} from "../types";
+import { AnimationGenerator, TAnimation } from "../types";
 
 // Durstenfeld shuffle algorithm
 function shuffle(arr: number[]): number[] {
@@ -57,7 +51,7 @@ function* partition(
   arr: number[],
   startIdx: number,
   endIdx: number
-): Generator<AnimationDispatcher, number, any> {
+): Generator<TAnimation, number, any> {
   // set pivot index
   const mid = Math.floor(startIdx + (endIdx - startIdx) / 2);
 
@@ -90,6 +84,16 @@ function logBase2(n: number): number {
   return Math.floor(Math.log(n) / Math.log(2));
 }
 
+function colorIndices(indexColorPairs: [number, string][]) {
+  return { toColor: indexColorPairs } as TAnimation;
+}
+function replaceIndices(indexValuePairs: [number, number][]) {
+  return { toReplace: indexValuePairs } as TAnimation;
+}
+function clearIndices(indices: number[]) {
+  return { toClear: indices } as TAnimation;
+}
+
 export {
   getRandomIntFromRange,
   sleep,
@@ -98,4 +102,7 @@ export {
   swap,
   partition,
   logBase2,
+  colorIndices,
+  clearIndices,
+  replaceIndices,
 };

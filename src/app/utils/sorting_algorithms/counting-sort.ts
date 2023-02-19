@@ -1,5 +1,6 @@
 import { COLOR } from "../../other/constants";
-import { AnimationGenerator, colorIndices, replaceIndices } from "../../types";
+import { AnimationGenerator } from "../../types";
+import { colorIndices, replaceIndices } from "../common";
 
 function* countingSort(arr: number[]): AnimationGenerator {
   const k = Math.max(...arr);

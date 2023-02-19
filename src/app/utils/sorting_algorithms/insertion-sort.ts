@@ -1,10 +1,6 @@
 import { COLOR } from "../../other/constants";
-import { swap } from "../common";
-import {
-  AnimationGenerator,
-  clearIndices,
-  colorIndices,
-} from "../../types";
+import { clearIndices, colorIndices, swap } from "../common";
+import { AnimationGenerator } from "../../types";
 
 function* insertionSort(
   arr: number[],

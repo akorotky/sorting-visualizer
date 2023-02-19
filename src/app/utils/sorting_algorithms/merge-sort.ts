@@ -1,10 +1,6 @@
 import { COLOR } from "../../other/constants";
-import {
-  AnimationGenerator,
-  clearIndices,
-  colorIndices,
-  replaceIndices,
-} from "../../types";
+import { AnimationGenerator } from "../../types";
+import { clearIndices, colorIndices, replaceIndices } from "../common";
 
 function* mergeSort(arr: number[]): AnimationGenerator {
   yield* mergeSortHelper(arr, [...arr], 0, arr.length - 1);
