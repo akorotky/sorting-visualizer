@@ -19,11 +19,11 @@ function Body() {
         <div
           className="array-bar"
           style={{
-            height: `${(value * resizeFactor)}%`,
+            height: `${value * resizeFactor}%`,
             width: `${resizeFactor}em`,
             boxShadow: `${0.1 * resizeFactor}em ${0.1 * resizeFactor}em black`,
             margin: `0 ${0.1 * resizeFactor}em`,
-            background: `linear-gradient(${getBarColor(idx)}, grey)`
+            background: `linear-gradient(${getBarColor(idx)}, grey)`,
           }}
           key={`${idx} ${value}`}
         ></div>
