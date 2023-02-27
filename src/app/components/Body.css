@@ -1,8 +1,19 @@
 .array-container {
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* make the bars face upwards*/
+  align-self: center; /* make the bars face upwards*/
+  align-items: flex-end;
+
+  justify-self: center;
+  
+  
   height: 100%;
-  padding: 2.5vmax;
-  background-color: #2f333b;
+  width: 100%;
+  padding: 8em;
+  box-sizing: border-box;
+
+}
+
+.array-bar {
+  border-radius: 10em;
 }

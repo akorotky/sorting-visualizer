@@ -14,4 +14,21 @@ type TAnimation = {
   toClear?: number[]; // indices
 };
 
-export type { AnimationGenerator, TAnimation, AnimationGeneratorFunction };
+type SelectOption = {
+  label: string;
+  value: string | number;
+};
+type SelectProps = {
+  options: SelectOption[];
+  value: SelectOption;
+  onChange: (value: SelectOption) => void;
+  disabled: boolean;
+};
+
+export type {
+  AnimationGenerator,
+  TAnimation,
+  AnimationGeneratorFunction,
+  SelectProps,
+  SelectOption,
+};

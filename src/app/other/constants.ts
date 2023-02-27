@@ -1,4 +1,4 @@
-const INITIAL_ANIMATION_DELAY: number = 30; // ms
+const INITIAL_ANIMATION_DELAY: number = 31; // ms
 const INITIAL_ARRAY_SIZE: number = 100;
 
 const COLOR = {

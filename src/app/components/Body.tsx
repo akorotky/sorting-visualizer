@@ -11,7 +11,7 @@ function Body() {
     } else return COLOR.DEFAULT[idx % 3];
   }
 
-  const resizeFactor = 100 / animation.array.length;
+  const resizeFactor = 100 / animation.array.length / 1.1;
 
   return (
     <div className="array-container">
@@ -19,11 +19,11 @@ function Body() {
         <div
           className="array-bar"
           style={{
-            height: `${(value * resizeFactor) / 1.4}vh`,
-            width: `${resizeFactor}vw`,
-            boxShadow: `${0.1 * resizeFactor}vw ${0.2 * resizeFactor}vh black`,
-            margin: `0 ${0.1 * resizeFactor}vw`,
-            backgroundColor: getBarColor(idx),
+            height: `${(value * resizeFactor)}%`,
+            width: `${resizeFactor}em`,
+            boxShadow: `${0.1 * resizeFactor}em ${0.1 * resizeFactor}em black`,
+            margin: `0 ${0.1 * resizeFactor}em`,
+            background: `linear-gradient(${getBarColor(idx)}, grey)`
           }}
           key={`${idx} ${value}`}
         ></div>

@@ -12,18 +12,37 @@ import { COLOR } from "../other/constants";
 import {
   AnimationGenerator,
   AnimationGeneratorFunction,
+  SelectOption,
   TAnimation,
 } from "../types";
 import { generateArray, sleep } from "../utils/common";
 import * as Algorithms from "../utils/sorting_algorithms";
 import "./Toolbar.css";
+import Select from "./Select";
 
 function Toolbar() {
   const animation = useAppSelector((state) => state.animation);
   const dispatch = useAppDispatch();
   const [canRun, setCanRun] = useState<boolean>(true);
   const animationGenerator = useRef<AnimationGenerator | undefined>();
-  const sortSelectionRef = useRef<HTMLSelectElement>(null);
+
+  const options: SelectOption[] = [
+    { label: "Quicksort", value: "quickSort" },
+    { label: "Mergesort", value: "mergeSort" },
+    { label: "Heapsort", value: "heapSort" },
+    { label: "Insertion Sort", value: "insertionSort" },
+    { label: "Bubble Sort", value: "bubbleSort" },
+    { label: "Selection Sort", value: "selectionSort" },
+    { label: "Shell Sort", value: "shellSort" },
+    { label: "Cocktail Shaker Sort", value: "cocktailShakerSort" },
+    { label: "Counting Sort", value: "countingSort" },
+    { label: "Bitonic Sort", value: "bitonicSort" },
+    { label: "Introsort 1", value: "introSort1" },
+    { label: "Introsort 2", value: "introSort2" },
+    { label: "Introsort 3", value: "introSort3" },
+  ];
+
+  const [selectedSort, setSelectedSort] = useState<SelectOption>(options[0]);
 
   // sorting animation loop
   useEffect(() => {
@@ -95,9 +114,8 @@ function Toolbar() {
   function changeArraySize(e: ChangeEvent<HTMLInputElement>) {
     // target value is a string
     const sliderValue = parseInt(e.target.value);
-    const selectedSort = sortSelectionRef.current?.value;
     const newArraySize =
-      selectedSort === "bitonicSort"
+      selectedSort.value === "bitonicSort"
         ? sliderValue < 10
           ? 2 ** sliderValue
           : 128
@@ -174,45 +192,41 @@ function Toolbar() {
     if (animation.isRunning) {
       stopAnimation(arr);
     } else {
-      const selectedSort = sortSelectionRef.current?.value;
-      if (selectedSort !== undefined)
+      if (selectedSort.value !== undefined)
         sort(
           arr,
           (Algorithms as { [key: string]: AnimationGeneratorFunction })[
-            selectedSort
+            selectedSort.value
           ]
         );
     }
   }
 
   function sliderStep() {
-    const selectedSort = sortSelectionRef.current?.value;
-    return selectedSort === "bitonicSort" ? 1 : 5;
+    return selectedSort.value === "bitonicSort" ? 1 : 5;
   }
 
   function sliderMinValue() {
-    const selectedSort = sortSelectionRef.current?.value;
-    return selectedSort === "bitonicSort" ? 3 : 10;
+    return selectedSort.value === "bitonicSort" ? 3 : 10;
   }
   function sliderMaxValue() {
-    const selectedSort = sortSelectionRef.current?.value;
-    return selectedSort === "bitonicSort" ? 9 : 800;
+    return selectedSort.value === "bitonicSort" ? 9 : 800;
   }
 
   function sliderValue(array: number[]) {
-    const selectedSort = sortSelectionRef.current?.value;
     const value: string = (
       document.getElementById("sizeSlider") as HTMLInputElement
     )?.value;
-    return selectedSort === "bitonicSort" ? value : array.length;
+    return selectedSort.value === "bitonicSort" ? value : array.length;
   }
 
   return (
     <div className="toolbar-container">
       <button
-        className="toolbar-btn"
+        className={`toolbar-btn ${
+          animation.isRunning || !canRun ? "disabled" : ""
+        }`}
         onClick={() => shuffleAnimation(animation.array)}
-        disabled={animation.isRunning || !canRun}
       >
         Shuffle Array
       </button>
@@ -225,16 +239,18 @@ function Toolbar() {
         {animation.isPaused ? "Resume" : "Pause"} Sort
       </button>
       <button
-        className="toolbar-btn"
+        className={`toolbar-btn ${!canRun ? "disabled" : ""}`}
         onClick={() => handleAnimationRun(animation.array)}
         style={{ width: "5vw" }}
-        disabled={!canRun}
       >
         {animation.isRunning ? "Stop" : ""} Sort
       </button>
-      <div className="slider">
+      <div className="slider-container">
         <label htmlFor="sizeSlider">Array Size</label>
         <input
+          className={`slider ${
+            animation.isRunning || !canRun ? "disabled" : ""
+          }`}
           id="sizeSlider"
           type="range"
           min={sliderMinValue()}
@@ -242,13 +258,13 @@ function Toolbar() {
           step={sliderStep()}
           value={sliderValue(animation.array)}
           onChange={(e) => changeArraySize(e)}
-          disabled={animation.isRunning || !canRun}
         ></input>
         {animation.array.length}
       </div>
-      <div className="slider">
+      <div className="slider-container">
         <label htmlFor="speedSlider">Sorting Speed</label>
         <input
+          className="slider"
           id="speedSlider"
           type="range"
           min="0"
@@ -256,27 +272,14 @@ function Toolbar() {
           value={100 - animation.delay}
           onChange={changeSortingSpeed}
         />
-        {100 - animation.delay + 1} %
+        {100 - animation.delay + 1}%
       </div>
-      <select
-        className="sort-select"
-        ref={sortSelectionRef}
+      <Select
+        options={options}
+        value={selectedSort}
+        onChange={(option) => setSelectedSort(option)}
         disabled={animation.isRunning}
-      >
-        <option value="bubbleSort">Bubble Sort</option>
-        <option value="cocktailShakerSort">Cocktail Shaker Sort</option>
-        <option value="selectionSort">Selection Sort</option>
-        <option value="insertionSort">Insertion Sort</option>
-        <option value="shellSort">Shellsort</option>
-        <option value="heapSort">Heapsort</option>
-        <option value="mergeSort">Mergesort</option>""
-        <option value="quickSort">Quicksort</option>
-        <option value="bitonicSort">Bitonic Sort</option>
-        <option value="countingSort">Counting Sort</option>
-        <option value="introSort1">Introsort Bottom-Up</option>
-        <option value="introSort2">Introsort Top-Down</option>
-        <option value="introSort3">Introsort Insertion-Last</option>
-      </select>
+      ></Select>
     </div>
   );
 }
