@@ -3,15 +3,11 @@
   justify-content: center;
   align-self: center; /* make the bars face upwards*/
   align-items: flex-end;
-
   justify-self: center;
-  
-  
   height: 100%;
   width: 100%;
   padding: 8em;
   box-sizing: border-box;
-
 }
 
 .array-bar {
