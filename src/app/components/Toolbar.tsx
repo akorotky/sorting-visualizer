@@ -234,14 +234,12 @@ function Toolbar() {
         className="toolbar-btn"
         onClick={pauseSorting}
         disabled={!animation.isRunning}
-        style={{ width: "6vw" }}
       >
         {animation.isPaused ? "Resume" : "Pause"} Sort
       </button>
       <button
         className={`toolbar-btn ${!canRun ? "disabled" : ""}`}
         onClick={() => handleAnimationRun(animation.array)}
-        style={{ width: "5vw" }}
       >
         {animation.isRunning ? "Stop" : ""} Sort
       </button>

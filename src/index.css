@@ -4,6 +4,7 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
+  font-size: clamp(0.5vw, 1vw, 5vw) !important;
 }
 
 #root {
