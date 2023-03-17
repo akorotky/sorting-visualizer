@@ -1,10 +1,12 @@
 import {
   INITIAL_ANIMATION_DELAY,
   INITIAL_ARRAY_SIZE,
+  OPTIONS,
 } from "../other/constants";
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { generateArray } from "../utils/common";
+import { SelectOption } from "../types";
 
 interface AnimationState {
   array: number[];
@@ -12,6 +14,7 @@ interface AnimationState {
   isRunning: boolean;
   isPaused: boolean;
   delay: number;
+  currentSort: SelectOption;
 }
 
 const initialState: AnimationState = {
@@ -20,6 +23,7 @@ const initialState: AnimationState = {
   isRunning: false,
   isPaused: false,
   delay: INITIAL_ANIMATION_DELAY,
+  currentSort: OPTIONS[0],
 };
 
 const animationSlice = createSlice({
@@ -52,6 +56,9 @@ const animationSlice = createSlice({
     setIsPaused: (state, action: PayloadAction<boolean>) => {
       state.isPaused = action.payload;
     },
+    setCurrentSort: (state, action: PayloadAction<SelectOption>) => {
+      state.currentSort = action.payload;
+    },
   },
 });
 
@@ -62,5 +69,6 @@ export const {
   setDelay,
   setIsRunning,
   setIsPaused,
+  setCurrentSort,
 } = animationSlice.actions;
 export default animationSlice.reducer;

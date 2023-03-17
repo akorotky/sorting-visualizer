@@ -94,6 +94,13 @@ function clearIndices(indices: number[]) {
   return { toClear: indices } as TAnimation;
 }
 
+function getShuffleDelay(arraySize: number): number {
+  return (20 * 100) / arraySize;
+}
+function getSortedDelay(arraySize: number): number {
+  return (10 * 100) / arraySize;
+}
+
 export {
   getRandomIntFromRange,
   sleep,
@@ -105,4 +112,6 @@ export {
   colorIndices,
   clearIndices,
   replaceIndices,
+  getShuffleDelay,
+  getSortedDelay,
 };

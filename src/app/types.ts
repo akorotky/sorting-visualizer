@@ -18,6 +18,7 @@ type SelectOption = {
   label: string;
   value: string | number;
 };
+
 type SelectProps = {
   options: SelectOption[];
   value: SelectOption;
@@ -25,10 +26,13 @@ type SelectProps = {
   disabled: boolean;
 };
 
+type TAlgorithmsMap = { [key: string]: AnimationGeneratorFunction };
+
 export type {
   AnimationGenerator,
   TAnimation,
   AnimationGeneratorFunction,
   SelectProps,
   SelectOption,
+  TAlgorithmsMap,
 };
