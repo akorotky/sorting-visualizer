@@ -1,6 +1,6 @@
-import { useAppSelector } from "../hooks";
-import { COLOR } from "../other/constants";
-import "./Body.css";
+import { useAppSelector } from "../../hooks";
+import { COLOR } from "../../other/constants";
+import styles from "./body.module.css";
 
 function Body() {
   const animation = useAppSelector((state) => state.animation);
@@ -14,10 +14,10 @@ function Body() {
   const resizeFactor = 100 / animation.array.length;
 
   return (
-    <div className="array-container">
+    <div className={styles["array-container"]}>
       {animation.array?.map((value, idx) => (
         <div
-          className="array-bar"
+          className={styles["array-bar"]}
           style={{
             height: `${value * resizeFactor}%`,
             width: `${resizeFactor}%`,

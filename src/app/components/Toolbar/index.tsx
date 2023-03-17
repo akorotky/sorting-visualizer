@@ -1,11 +1,11 @@
-import { setCurrentSort } from "../features/animation-slice";
-import { useAppDispatch } from "../hooks";
-import { OPTIONS } from "../other/constants";
-import { SelectOption } from "../types";
-import * as Algorithms from "../utils/sorting_algorithms";
-import "./Toolbar.css";
-import Select from "./Select";
-import useAnimation from "../hooks/useAnimation";
+import { setCurrentSort } from "../../features/animation-slice";
+import { useAppDispatch } from "../../hooks";
+import useAnimation from "../../hooks/useAnimation";
+import { OPTIONS } from "../../other/constants";
+import { SelectOption } from "../../types";
+import * as Algorithms from "../../utils/sorting_algorithms";
+import Select from "../Select";
+import styles from "./toolbar.module.css";
 
 function Toolbar() {
   const dispatch = useAppDispatch();
@@ -44,24 +44,25 @@ function Toolbar() {
   }
 
   return (
-    <div className="toolbar-container">
+    <div className={styles["toolbar-container"]}>
       <button
-        className={`toolbar-btn ${
-          animation.isRunning || !canRun ? "disabled" : ""
+        className={`${styles["toolbar-btn"]} ${
+          animation.isRunning || !canRun ? styles.disabled : ""
         }`}
         onClick={() => shuffleAnimation(animation.array)}
       >
         Shuffle Array
       </button>
       <button
-        className="toolbar-btn"
+        className={`${styles["toolbar-btn"]} ${
+          !animation.isRunning ? styles.disabled : ""
+        }`}
         onClick={(e) => pauseAnimation()}
-        disabled={!animation.isRunning}
       >
         {animation.isPaused ? "Resume" : "Pause"} Sort
       </button>
       <button
-        className={`toolbar-btn ${!canRun ? "disabled" : ""}`}
+        className={`${styles["toolbar-btn"]} ${!canRun ? styles.disabled : ""}`}
         onClick={() =>
           handleAnimationRun(
             animation.isRunning,
@@ -73,11 +74,11 @@ function Toolbar() {
       >
         {animation.isRunning ? "Stop" : ""} Sort
       </button>
-      <div className="slider-container">
+      <div className={styles["slider-container"]}>
         <label htmlFor="sizeSlider">Array Size</label>
         <input
-          className={`slider ${
-            animation.isRunning || !canRun ? "disabled" : ""
+          className={`${styles.slider} ${
+            animation.isRunning || !canRun ? styles.disabled : ""
           }`}
           id="sizeSlider"
           type="range"
@@ -89,10 +90,10 @@ function Toolbar() {
         ></input>
         {animation.array.length}
       </div>
-      <div className="slider-container">
+      <div className={styles["slider-container"]}>
         <label htmlFor="speedSlider">Sorting Speed</label>
         <input
-          className="slider"
+          className={styles["slider"]}
           id="speedSlider"
           type="range"
           min="0"

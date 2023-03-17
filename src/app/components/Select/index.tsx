@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SelectOption, SelectProps } from "../types";
+import { SelectOption, SelectProps } from "../../types";
 import styles from "./select.module.css";
 
 function Select({ options, value, onChange, disabled }: SelectProps) {
