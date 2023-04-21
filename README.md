@@ -1,9 +1,13 @@
-# Sorting Visualizer
-Sorting visualizer is a tool for visualizing array sorting algorithms. 
-
+# About
+Sorting visualizer is a tool for visualizing array sorting algorithms. <br>
 I made this project to help me and others learn more about sorting algorithms and to better understand how they work. 
 
-So far the project allows to visualize the following algorithms:
+# Tech Stack
+* **Language**: Typescript
+* **Libraries:** React
+* **Build tool:** Vite
+
+# Sorting algorithms
 * Bubble Sort
 * Selection Sort
 * Insertion Sort
@@ -16,5 +20,17 @@ So far the project allows to visualize the following algorithms:
 * Cocktail Shaker Sort
 * Bitonic Sort
 
-This project was bootstrapped using [Vite.js](https://vitejs.dev/)
+# Project Features
+<ul type="square">
+  <li>Can choose different sorting algorithms</li>
+  <li>Can shuffle the array to randomize the bars after sorting</li>
+  <li>Can speed up/slow down the sorting animation</li>
+  <li>Can pause or cancel the sorting</li>
+</ul>
+
+# Installation 
+1. ```git clone https://github.com/skorotky/sorting-visualizer.git```  
+2. ```cd sorting-visualizer```  
+3. ```npm install```
+4. Run ```npm run dev``` to start the development environment at http://localhost:5173/.
 
