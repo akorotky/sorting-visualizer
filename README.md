@@ -4,7 +4,7 @@ I made this project to help me and others learn more about sorting algorithms an
 
 # Tech Stack
 * **Language**: Typescript
-* **Libraries:** React
+* **Libraries:** React, Redux
 * **Build tool:** Vite
 
 # Sorting algorithms
